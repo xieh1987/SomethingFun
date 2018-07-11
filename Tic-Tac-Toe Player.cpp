@@ -10,10 +10,11 @@ class TicTacToe {
         vector<int> row_sum;
         vector<int> col_sum;
         int diag=0, adiag=0;
+        int step;
  
     /** Initialize your data structure here. */
     public:
-        TicTacToe(int n) : size_n(n), board(n, vector<char>(n)), row_sum(n,0), col_sum(n, 0) {
+        TicTacToe(int n) : size_n(n), board(n, vector<char>(n)), row_sum(n,0), col_sum(n, 0), step(0) {
             cout<<"Board Generated! Enjoy Your Play!!!"<<endl;
         }
     
@@ -26,6 +27,7 @@ class TicTacToe {
                 1: Player 1 wins.
                 2: Player 2 wins. */
         int move(int row, int col, int player) {
+            ++step;
             if(player==1){
                 this->board[row][col] = 'X';
                 this->PrintBoard();
@@ -72,6 +74,18 @@ class TicTacToe {
                 cout<<"|\n";
             }
         }
+        
+        char getPosition(int i, int j){
+            return this->board[i][j];
+        }
+        
+        int getStep(){
+            return this->step;
+        }
+        
+        int getSize(){
+            return this->size_n;
+        }
 };
  
 /**
@@ -84,19 +98,23 @@ int main()
 {
     TicTacToe board(3);
     int win = 0;
-    win = board.move(0, 0, 1);
-    cout<<"Winner: "<<win<<endl;
-    win = board.move(0, 2, 2);
-    cout<<"Winner: "<<win<<endl;
-    win = board.move(2, 2, 1);
-    cout<<"Winner: "<<win<<endl;
-    win = board.move(1, 1, 2);
-    cout<<"Winner: "<<win<<endl;
-    win = board.move(2, 0, 1);
-    cout<<"Winner: "<<win<<endl;
-    win = board.move(1, 0, 2);
-    cout<<"Winner: "<<win<<endl;
-    win = board.move(2, 1, 1);
-    cout<<"Winner: "<<win<<endl;
+    int i, j, player=1;
+    cout<<"Input move position for Player "<<player<<": ";
+    while(cin>>i>>j){
+        if(board.getPosition(i,j)=='X'||board.getPosition(i,j)=='O'){
+            cout<<"Position Occupied!"<<endl;
+            cout<<"Input move position for Player "<<player<<": ";
+            continue;
+        }
+        win = board.move(i, j, player);
+        cout<<"Winner: "<<win<<endl;
+        if(win) break;
+        if(board.getStep()==board.getSize()*board.getSize()){
+            cout<<"No further move available. No one wins T_T"<<endl;
+            break;
+        }
+        player = player % 2 + 1;
+        cout<<"Input move position for Player "<<player<<": ";
+    }
     return 0;
 }
